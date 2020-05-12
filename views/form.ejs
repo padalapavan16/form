@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Angular JS</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="javascripts/angular.min.js"></script>
+  <script type="text/javascript" src="javascripts/angular.js"></script>
+</head>
+<style>
+	body{
+        background:black;
+    }
+    label{
+        color:black;
+    }
+     thead,th{
+        border:3px black;
+        background-color: lightpink;
+        
+    }
+    th{
+    	color:black;
+    }
+  
+     tbody,td{
+        border:2px solid white;
+        background-color: white;
+        color:black;
+    } 
+
+
+
+</style>
+<body ng-app="myApp">
+  <div class="container" ng-controller="myController">
+    <div class="col-md-12">
+      <a href="/logout"><i class="btn btn-danger glyphicon glyphicon-log-out" style="margin-left:1100px; margin-top:10px;"><b>&nbsp;logout</b></i></a>
+    </div>
+     <div class="col-md-12" style="border: 2px solid black; margin-top: 50px;padding: 10px; border-radius:10px;margin-bottom: 20px;background-color: lightblue; box-shadow: 5px 5px 3px 3px white">
+    <form class="form-group">
+    	<h1 style="text-align: center; color: darkblue">Form</h1>
+    	<label>Name :</label>
+    	<input class="form-control" type="text" ng-model="users.name" required="">
+    	<label>Roll No :</label>
+    	<input class="form-control" type="text" ng-model="users.rollno" required="">
+    	<label>Branch :</label>
+    	<input class="form-control" type="text" ng-model="users.branch" required="">
+    	<label>College :</label>
+    	<input class="form-control" type="text" ng-model="users.college" required="">
+    	<br>
+      <center>
+    	<button class="btn btn-primary" ng-click="saveData(users)">Submit</button></center>
+    </form>
+  </div>
+   <br>
+    <table class="table table-bordered table-striped">
+      <thead>
+        <tr>
+          <th>S.No</th>
+          <th>id</th>
+          <th>Name</th>
+          <th>Rollno</th>
+          <th>Branch</th>
+          <th>College</th>
+          <th>Edit</th>
+          <th>Remove</th>
+
+        </tr>
+      </thead>
+      <tbody>
+      	<tr ng-repeat="users in user">
+      	 <td>{{$index+1}}</td>
+      	 <td><span ng-hide="edituser">{{users._id}}</span>
+      	 <input class="form-control " type="text" ng-show="edituser" ng-model="users._id" ng readonly="true"></td>
+         <td><span ng-hide="edituser">{{users.name}}</span>
+         <input class="form-control " type="text" ng-show="edituser" ng-model="users.name"></td>
+         <td><span ng-hide="edituser">{{users.rollno}}</span>
+         <input class="form-control " type="text" ng-show="edituser" ng-model="users.rollno"></td>
+         <td><span ng-hide="edituser">{{users.branch}}</span>
+         <input class="form-control " type="text" ng-show="edituser" ng-model="users.branch"></td>
+         <td><span ng-hide="edituser">{{users.college}}</span>
+         <input class="form-control " type="text" ng-show="edituser" ng-model="users.college"></td>
+         <td>
+         	<i class="btn btn-primary glyphicon glyphicon-edit" ng-hide="edituser" ng-click="editData();edituser=true "></i>
+         	<i class="btn btn-success glyphicon glyphicon-ok" ng-show="edituser" ng-click="updateData(users);edituser=false"></i>
+         </td>
+         <td>
+         	<i class="btn btn-danger glyphicon glyphicon-trash" ng-click="removeData(users)"></i></td>
+       	</tr>
+      </tbody>
+  </div>
+  </body>
+  </html>

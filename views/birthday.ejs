@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>birthday</title>
+</head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="javascripts/angular.min.js"></script>
+	<script type="text/javascript" src="javascripts/birthday.js"></script>
+  <style>
+    th{
+      color: white;
+    }
+    td{
+      color:white;
+    }
+  </style>
+
+<body ng-app='birthdayApp'  style="background: #c6ffdd; /* fallback for old browsers */
+  background: -webkit-linear-gradient(to top, #c6ffdd, #fbd786, #f7797d); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to top, #c6ffdd, #fbd786, #f7797d); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */height: 650px">
+	<div class="container" ng-controller="birthdayController">
+    <div class="row">
+		<div class ="col-md-4" style=" border-radius:10px ;box-shadow:3px 3px  ;border:2px solid black ;margin-top: 60px; padding: 25px;margin-bottom: 20px" >
+           <center><h2 style="color:black">BIRTHDAY</h2></center>
+           <form class="form-group">
+           	  <label>Name:</label>
+           	  <input class="form-control" type="text" name="" ng-model="birth.name"><br>
+           	  <label>Mobile:</label>
+           	  <input class="form-control"  type="text" name="" ng-model="birth.mobile"><br>
+           	  <label>Email:</label>
+           	  <input class="form-control"  type="email" name="" ng-model="birth.email"><br>
+              <label>Date Of Birth:</label>
+           	  <input class="form-control"  type="date" name="" ng-model="birth.dob"><br>
+           	  <button class="btn btn-info" ng-click="sendmail(birth)">Submit</button>
+           	</form>
+           </div>
+           <br>
+           <br>
+           <div class="col-md-6" style="margin-left:100px;margin-top: 22px ">
+           <table class="table " style="background-color: black ; border-radius:10px;">
+              <thead>
+                <tr>
+                  <th>S.No</th>
+                  <th>Name</th>
+                  <th>Mobile</th>
+                  <th>Email</th>
+                  <th>DOB</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="birth in user">
+                  <td>{{$index+1}}</td>
+                  <td>{{birth.name}}</td>
+                  <td>{{birth.mobile}}</td>
+                  <td>{{birth.email}}</td>
+                  <td>{{birth.dob}}</td>
+                </tr>
+              </tbody>
+            </table>
+</div>
+</body>
+</html>

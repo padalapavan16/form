@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>facebook</title>
+    <!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    
+  </head>
+  <body style="background-color: lightyellow;text-align: center">
+  	<ul class="nav nav-tabs">
+  		<li class="action"><a href=#form data-toggle="tab">form</a></li>
+  		<li ><a href=#list data-toggle="tab">list</a></li>
+    </ul>
+    <div class="tab-content">
+    	<div id="form" class="tab-pane fade active in ">
+	  	<div class="container">
+	  	<form class="form-group">
+		    <h1>FEED BACK</h1>
+		    <label>NAME:</label>
+		    <input class="form-control" type="text" name="">
+		    <br>
+		    <br>
+		    <label>ROLL NO:</label>
+		    <input class="form-control" type="text" name="">
+		    <br>
+		    <br>
+		    <label>Branch:</label>
+		    <input class="form-control" type="text" name="">
+		    <br>
+		    <br>
+		    <label>College</label>
+		    <select class="form-control">
+		    	<option>a</option>
+		    	<option>b</option>
+		    	<option>c</option>
+		    </select>
+		    <br>
+		    <br>
+		    <label>Feedback</label>
+		    <textarea class="form-control" cols="20" rows="5"></textarea><br><br>
+		    <button class="btn btn-info">submit</button></form>
+		</div>
+	</div>
+		
+    	<div id="list" class="tab-pane fade  ">
+    		<div class="container"><br>
+    			<table class="table table-bordered">
+    				<thead>
+    					<tr>
+    						<th>name</th>
+    						<th>roll no</th>
+    						<th>branch</th>
+    						<th>college</th>
+    						<th>feedback</th>
+    						<th>edit</th>
+    						<th>remove</th>
+    					</tr>
+    				</thead>
+    			<tbody>
+    				<tr>
+    					<td>a</td>
+                        <td>1</td>
+                        <td>b</td>
+                        <td>c</td>
+                        <td>ee</td>
+                        <td><button class="btn btn-success">edit</button>
+                        <td><button class="btn btn-danger">remove</button>	
+    					</tr>
+    					</tbody></table>	
+    				
+
+    	</div>
+    </div>
+  </body>
+</html>
