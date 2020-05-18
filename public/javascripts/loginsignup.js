@@ -5,7 +5,7 @@ app.controller('signupController', function($scope,$http,$window){
   $scope.signup = function(reg){
   	$http({
   		method : 'POST',
-  		url : '/postsignup',
+  		url : 'postsignup',
   		data : $scope.reg
   	}).then(function success(response){
       //alert('Registered Successfully');
@@ -32,7 +32,7 @@ app.controller('loginController', function($scope,$http,$window){
       $window.location.href='/home'
     },function error(response){
       alert('Registration Failed, Please try again');
-      $scope.log={};
+      //$scope.log={};
     });
   }
 });

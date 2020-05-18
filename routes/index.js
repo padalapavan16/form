@@ -3,6 +3,8 @@ var router = express.Router();
 var randomstring = require('randomstring');
 var nodemailer = require('nodemailer');
 var monk = require('monk');
+const Cryptr = require('cryptr');
+const cryptr = new Cryptr('myTotalySecretKey');
 var moment=require('moment');
 var db = monk('localhost:27017/thub');
 var col=db.get('user');
@@ -22,8 +24,13 @@ router.get('/', function(req, res) {
 
 //signup data into back end
 router.post('/postsignup', function(req,res){
-
-  signup.insert(req.body, function(err,docs){
+  var data={
+     username:req.body.username,
+     email:req.body.email,
+     password:cryptr.encrypt(req.body.password)
+    // password:req.body.password
+   }
+  signup.insert(data, function(err,docs){
     if(err){
       console.log(err);
     }
@@ -35,18 +42,24 @@ router.post('/postsignup', function(req,res){
 });
 
 //login data match
-router.post('/postlogin',function(req,res){
-	var email1=req.body.email;
-	var password1=req.body.password;
-	signup.findOne({"email":email1,"password":password1},function(err,docs){
-		if (docs){
-			res.send(docs);
-		}
-		else{
-		    res.sendstatus(500);
-		}
-	})
-})
+ router.post('/postlogin', function(req,res){
+  
+  var email1 = req.body.email;
+
+  signup.find({'email':req.body.email},function(err,data){
+  var password2 = cryptr.decrypt(data[0].password);
+  var password1 = req.body.password;
+  delete data[0].password;
+  //console.log(data[0]);
+  req.session.user = data[0];
+  if(password1==password2){
+    res.sendStatus(200);
+  }
+  else{
+    res.sendStatus(500);
+  }
+  });
+
 
 //------------------------------------otpemail--------------------------------------------------//
 
@@ -56,20 +69,24 @@ router.post('/postforgot', function(req,res){
   
   signup.update({"email":email},{$set:{"password":newpassword}});
 
-  var transporter = nodemailer.createTransport({
-  service: 'Gmail',
-  host: 'smtp.gmail.com',
-      port: 465,
+  const transporter = nodemailer.createTransport({
+     service: 'gmail',
+     host:'smtp.gmail.com',
+     port: 465,
      secure: true,
   auth: {
     user: 'padalapavan27@gmail.com',
     pass: 'pavan2589'
-  }
+  },
+  tls:
+  {rejectUnauthorized:false}
+
+
   });
 
   var mailOptions = {
-    from: 'padala pavan',
-    to: 'req.body.email',
+    from: 'padalapavan16@gmail.com',
+    to: req.body.email,
     subject: 'OTP',
     text: 'Your OTP is'+newpassword
   };
@@ -87,12 +104,21 @@ router.post('/postforgot', function(req,res){
 
 /* GET home page. */
 router.get('/home', function(req, res) {
-  res.render('form');
+   if(req.session && req.session.user){
+    console.log(req.session.user);
+    res.locals.user = req.session.user
+    res.render('form');
+  }
+  else{
+    req.session.reset();
+    res.redirect('/');
+}
 });
 
 
 /* home logout. */
 router.get('/logout', function(req,res){
+   req.session.reset();
   res.redirect('/');
 });
 
@@ -173,76 +199,113 @@ router.get('/getbirth',function(req,res){
 });
 
 
-
-router.post('/postbirthday',function(req,res){
- // console.log(req.body);
- var data={
-  name:req.body.name,
-  mobile:req.body.mobile,
-  email:req.body.email,
-  dob:req.body.dob
- }
-  birth.insert(data,function(err,docs){
+router.post('/postbirthday', function(req,res){
+  /*var options={
+    method:'POST',
+    url:'http://google.com/api/v4/?api_key="---key---"&method=sms&message='+newpassword+',&to=&sender=ADITYA' 
+    };
+  request(options,function(error,response,body){
     if(err){
       console.log(err);
     }
     else{
-      //console.log(docs);
-      res.send(docs);
+      console.log(body);
     }
+    });
+*/
   
+  //console.log(req.body);
+   const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      host:'smtp.gmail.com',
+      port:465,
+      secure:true,
+    auth: {
+      user: 'padalapavan27@gmail.com',
+      pass: 'pavan2589'
+     },
+    tls:
+    {rejectUnauthorized:false}
+
+    });
+
+    var mailOptions = {
+      from: 'padalapavan16@gmail.com',
+      to: req.body.email,
+      subject: 'Birthday Wishes',
+      text: 'Hi' + req.body.name + 'Happy Birthday '
+    };
+
+    transporter.sendMail(mailOptions, function(error, info){
+      if (error) {
+        console.log(error);
+      } 
+      else {
+        console.log('Email sent');
+        res.send(info);
+      }
+    });
 
 
-    var bdate=moment(req.body.dob).format('DD-MM-YYYY');
-    console.log(bdate);
-    var time=moment().format('hh:mm:ss:a');//12:00:00:a
-    //console.log(time);
-    var date=moment().format('DD-MM-YYYY');
-    console.log(date);
-    if(date==bdate){
-      res.send(birth.dob);
-      console.log(birth.dob);
+
+var data={
+    name:req.body.name,
+    mobile:req.body.mobile,
+    email:req.body.email,
+    dob:moment(req.body.dob).format('DD-MM-YYYY')
+    } 
+  birth.insert(data,function(err,docs){
+    if(err){
+      console.log(err)
+    }
+   else{
+      res.send(docs)
+      var Date = moment().format('DD-MM-YYYY');
+      console.log(Date);
+}
+})
+   });
+
+/*if(dob==Date){
+  birth.insert(req.body,function(err,docs){
+    if(err){
+      console.log(err);
     }
     else{
-      console.log(error);
+      res.send(docs);
     }
-  })
+   })
 
+ }
+else if(dob!==Date){
+  birth.insert(req.body,function(err,docs){
+    if(err){
+      console.log(err);
+    }
+    else{
+      res.send(docs);
+}
+})
+});*/
+/*else(dob==!Date){
+    birth.insert(req.body,function(err,docs){
+    if(err){
+      console.log(err);
+    }
+    else{
+      res.send(docs);
+}
+}
 
-});
+})
 
+*/
 
-     //    var transporter = nodemailer.createTransport({
-     //    service: 'gmail',
-     //     host: 'smtp.gmail.com',
-     //     port: 465,
-     //     secure: true,
-     //    auth: {
-     //      user: 'padalapavan16@gmail.com',
-     //      pass: 'dadmomsis'
-     //    }
-     //    });
+  //var bdate = moment(req.body.dob).format('DD-MM-YYYY');
+  //console.log(bdate);
 
-     //    var mailOptions = {
-     //      from: 'Padala pavan',
-     //      to: req.body.email,
-     //      subject: 'Birthday wishes',
-     //      text: 'hi'+req.body.name+'happy birthday'
-     //    };
+  // var Time = moment().format('hh:mm:ss:a');
+  // console.log(Time);
+  //if(bdate==Date){
 
-     //    transporter.sendMail(mailOptions, function(error, info){
-     //      if (error) {
-     //        console.log(error);
-     //      } else {
-     //        console.log('Email sent');
-     //        res.send(info);
-     //      }
-     //    });
-     //  //}
-     // // });*/
-
-
-    
-        
-    
 module.exports = router;
