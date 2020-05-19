@@ -3,8 +3,11 @@ var router = express.Router();
 var randomstring = require('randomstring');
 var nodemailer = require('nodemailer');
 var monk = require('monk');
-const Cryptr = require('cryptr');
-const cryptr = new Cryptr('myTotalySecretKey');
+var Cpass = require('cpass').Cpass;
+var cpass = new Cpass();
+//var Cryptr = require('cryptr');
+//var cryptr = new Cryptr('myTotalySecretKey');
+var QRCode = require('qrcode');
 var moment=require('moment');
 var db = monk('localhost:27017/thub');
 var col=db.get('user');
@@ -14,6 +17,17 @@ var birth=db.get('birth');
 
 router.get('/', function(req, res) {
   res.render('login');
+});
+//-----------------pdf--------------------//
+router.get('/pdf', function(req,res){
+  res.render('pdf');
+});
+//=====================qrcode=========================//
+router.get('/qrcode',function(req,res){
+  QRCode.toDataURL('happy birthday', function (err, url) {
+  //console.log(url)
+  res.render('qrcode',{'qrcode':url});
+})
 });
 
 
@@ -27,7 +41,7 @@ router.post('/postsignup', function(req,res){
   var data={
      username:req.body.username,
      email:req.body.email,
-     password:cryptr.encrypt(req.body.password)
+     password:cpass.encode(req.body.password)
     // password:req.body.password
    }
   signup.insert(data, function(err,docs){
@@ -35,7 +49,7 @@ router.post('/postsignup', function(req,res){
       console.log(err);
     }
     else{
-      //console.log(docs); 	
+      console.log(docs); 	
       res.send(docs);
     }
   })
@@ -44,20 +58,22 @@ router.post('/postsignup', function(req,res){
 //login data match
  router.post('/postlogin', function(req,res){
   
-  var email1 = req.body.email;
-
+  var email1=req.body.email;
   signup.find({'email':req.body.email},function(err,data){
-  var password2 = cryptr.decrypt(data[0].password);
+  var password2 = cpass.decode(data[0].password);
+  //console.log(data[0].password);
   var password1 = req.body.password;
-  delete data[0].password;
-  //console.log(data[0]);
+  //console.log(password1);
+  //delete data[0].password;
+  console.log(data[0]);
   req.session.user = data[0];
-  if(password1==password2){
+  if(password2==password1){
     res.sendStatus(200);
   }
   else{
     res.sendStatus(500);
   }
+})
   });
 
 
@@ -307,5 +323,4 @@ else if(dob!==Date){
   // var Time = moment().format('hh:mm:ss:a');
   // console.log(Time);
   //if(bdate==Date){
-
 module.exports = router;

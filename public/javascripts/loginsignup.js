@@ -29,10 +29,10 @@ app.controller('loginController', function($scope,$http,$window){
     }).then(function success(response){
       //alert('Registered Successfully');
 
-      $window.location.href='/home'
+      window.location.href='/home'
     },function error(response){
       alert('Registration Failed, Please try again');
-      //$scope.log={};
+      $scope.log={};
     });
   }
 });
